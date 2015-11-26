@@ -79,6 +79,8 @@ if len(args) < 1:
     exit(1)
 
 hexport = "%x" % int(args[0])
+HEXPORT = "%X" % int(args[0])
+
 print "Start collecting RX and TX queue statistics information and dropped packages result for port (%s)" % args[0]
 
 if opts.filename:
@@ -89,24 +91,27 @@ header = ""
 max_rx = 0
 max_tx = 0
 
+drops = 0
 stime = atime = time.time()
 while stime >= atime - opts.runtime:
     f = open(udp_input, 'rb')
     lines = f.readlines()
     f.close()
     for item in lines:
-        if search(hexport, item) != None:
+        if search(hexport, item) != None or search(HEXPORT, item) != None :
+            if search(HEXPORT, item) != None:
+                hexport=HEXPORT
             buffers = item.strip().split() # 0:sl, 1:local_address, 2:rem_address, 3:st, 4:tx_queue rx_queue, 5:tr tm->when retrnsmt
                                            # 6:retrnsmt, 7:uid, 8:timeout, 9:inode, 10:ref, 11:pointer, 12:drops
             sl, la, ra, st, tx_rx, tr, retrnsmt, uid, timeout, inode, ref, pointer, drops = buffers
-            if opts.listened == 'local' and search(la.split(':')[1], hexport) == None:
+            if opts.listened == 'local' and ( search(la.split(':')[1], hexport) == None and  search(la.split(':')[1], "0"+hexport) == None) :
                 # The local port does not match to the given local port
-                print "There is no matching port yet"
+                print "local :There is no matching port yet"
                 time.sleep(opts.freq)
                 continue
-            if opts.listened == 'remote' and search(ra.split(':')[1], hexport) == None:
+            if opts.listened == 'remote' and ( search(ra.split(':')[1], hexport) == None and  search(la.split(':')[1], "0"+hexport) == None) :
                 # The remote port does not match to the given remote port
-                print "There is no matching port yet"
+                print "remote: There is no matching port yet"
                 time.sleep(opts.freq)
                 continue
 
