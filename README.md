@@ -1,11 +1,14 @@
-udpstat
+#udpstat
 ======
 
 UDP buffer size (RX, TX) and dropped packages statistics program, written by PZolee (pzoleex @ freemail.hu), 2012
 https://github.com/pzolee/udpstat
 
 This little tool lists the usage of the incoming and outgoing buffers of the UDP socket belongs to the specified port, and the number of dropped packages.
+
 Example:
+
+```bash
 :~# ./udpstat.py 5001 -u 10
 Start collecting RX and TX queue statistics information and dropped packages result for port (5001)
 2012-09-03T14:28:38.550504;tx queue: 0 bytes, 0 KB, 0 MB; rx queue: 0 bytes, 0 KB, 0 MB; dropped packages: 0;
@@ -47,3 +50,4 @@ Options:
   -u RUNTIME, --run-time=RUNTIME
                         The running time if given. Default: untill CTRL+C
   -c, --csv             Generate CSV output format
+```
